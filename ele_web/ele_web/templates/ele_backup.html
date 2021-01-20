@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}"></script>
+</head>
+<body>
+<h1 id="t"></h1>
+<script type="text/javascript">
+    $(document).ready(function() {
+        namespace = '/ele';
+        var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace, {transports: ['websocket']});
+        socket.on('server_response', function(res) {
+            console.log(res.a);
+            $('#t').text(res.a);
+            console.log(res.v);
+            $('#t').text(res.v);
+        });
+    });
+</script>
+</body>
+</html>

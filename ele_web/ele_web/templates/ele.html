@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>电梯状态监控预警平台</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/monitor.css') }}">
+    <link rel="contents" href="{{ url_for('static', filename='images') }}">
+    <link rel="contents" href="{{ url_for('static', filename='fonts') }}">
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/echarts-all.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.count.min.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/monitor.js') }}" charset="utf-8"></script>
+</head>
+<body>
+<span id="bugBtn" title="出现错误数据，请检查" onClick="hideBugBtn('')"></span>
+<span id="localtime" style=" font-size:14px; position: absolute; z-index: 10; right: 25px; top:5px; "></span>
+<div style="height: 1000px;">
+    <header class="t_header">
+        <h3>电梯状态监控预警平台</h3>
+    </header>
+    <div style="margin-top: 20px;">
+        <div class="t_left_box">
+            <img class="t_l_line" src="../static/images/left_line.png" alt="">
+            <div class="t_mbox">
+                <div>当前加速度(m/s<sup>2</sup>)</div>
+                <span id="aCurrentSpan">0</span>
+                <i></i>
+            </div>
+            <div class="t_mbox">
+                <div>当前速度(m/s)</div>
+                <span id="vCurrentSpan">0</span>
+                <i></i>
+            </div>
+            <div class="t_mbox">
+                <div>当前位置(m)</div>
+                <span id="sCurrentSpan">0</span>
+                <i></i>
+            </div>
+            <div class="t_mbox">
+                <div>水平振动能量(m<sup>2</sup>/s<sup>4</sup>)</div>
+                <span id="ahCurrentSpan">0</span>
+                <i></i>
+            </div>
+            <div class="t_mbox">
+                <div>状态</div>
+                <span id="alarmCurrentSpan">正常</span>
+            </div>
+            <img class="t_r_line" src="../static/images/right_line.png" alt="">
+        </div>
+        <div class="t_top_box">
+            <img class="t_l_line" src="../static/images/left_line.png" alt="">
+            <ul class="t_nav">
+                <li>
+                    <span>已运行距离</span>
+                    <span id="addTj">m</span>
+                    <i></i>
+                </li>
+                <li>
+                    <span>运行次数</span>
+                    <span id="updateTj"> 次</span>
+                    <i></i>
+                </li>
+                <li>
+                    <span>预计检修时间</span>
+                    <span id="deleteTj"> 天</span>
+                </li>
+            </ul>
+            <img class="t_r_line" src="../static/images/right_line.png" alt="">
+        </div>
+        <div class="t_top2_box">
+            <img class="t_l_line" src="../static/images/left_line.png" alt="">
+            <div class="t_mbox2">
+                <span style="color: #0e94ea; float: left; margin-left: 13%;">已运行：</span>
+                <span id="runTimeTj" style="float: left; margin-left: 5%;"></span>
+            </div>
+            <img class="t_r_line" src="../static/images/right_line.png" alt="">
+        </div>
+        <div class="t_bottom_box">
+            <img class="t_l_line" src="../static/images/left_line.png" alt="">
+            <div class="chart" id="taskSize" style="width: 50%; height:50%;float:left;"></div>
+            <div class="chart" id="taskSize2" style="width: 50%; height:50%;float:left;"></div>
+            <div class="chart" id="taskSize3" style="width: 50%; height:50%;float:left;"></div>
+            <div class="chart" id="taskSize4" style="width: 50%; height:50%;float:left;"></div>
+            <img class="t_r_line" src="../static/images/right_line.png" alt="">
+        </div>
+        </div>
+</div>
+<div class="t_table_box">
+    <img class="t_l_line" src="../static/images/left_line.png" alt="">
+    <span style="color: #0e94ea; font-size: 28px;float: left; margin-left: 3%;">电梯运行质量参数：</span>
+    <table class="commonTable">
+        <thead>
+        <td title="序号" colspan="8">no monitor data</td>
+        </thead>
+    </table>
+    <img class="t_r_line" src="../static/images/right_line.png" alt="">
+</div>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/echarts-all.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.count.min.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/monitor.js') }}" charset="utf-8"></script>
+</body>
+</html>

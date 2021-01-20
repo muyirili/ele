@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+ .axis path,
+ .axis line{
+ fill: none;
+ stroke: black;
+ shape-rendering: crispEdges;
+ }
+
+ .axis text {
+ font-family: sans-serif;
+ font-size: 11px;
+ }
+
+ .overlay {
+ fill: none;
+ pointer-events: all;
+ }
+
+ .tooltip{
+ width: 150px;
+ height: auto;
+ position: absolute;
+ font-family: simsun;
+ font-size: 16px;
+ line-height: 26px;
+ text-align: left;
+ border: 1px solid black;
+ background-color: white;
+ border-radius: 5px;
+  }
+
+  .tooltip .title{
+   border-bottom: 1px solid #000;
+   text-align: center;
+  }
+
+  .tooltip .desColor{
+   width: 10px;
+   height: 10px;
+   float: left;
+ margin: 9px 8px 1px 8px;
+  }
+
+  .tooltip .desText{
+   display: inline;
+  }
+
+  .focusLine {
+ stroke: black;
+ stroke-width: 1px;
+ stroke-dasharray: 5,5;
+ }
+ </style>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/socket.io.min.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/d3.v3.js') }}" charset="utf-8"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/lineChart.js') }}" charset="utf-8"></script>
+
+</head>
+<body>
+
+<h1 id="t"></h1>
+<h1 id="t1"></h1>
+<h1 id="t2"></h1>
+<h1 id="t3"></h1>
+<svg contentScriptType="text/ecmascript" width="2000" xmlns:xlink="http://www.w3.org/1999/xlink" zoomAndPan="magnify" style="background-color:#ffffff;" contentStyleType="text/css" viewBox="0 0 2000.0 2000.0" height="2000" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" version="1.0">
+<defs>
+<symbol id="fillgauge1" viewBox="0 0 1000.0 300.0" preserveAspectRatio="none meet">
+</symbol>
+<symbol id="fillgauge2" viewBox="0 0 1000.0 300.0" preserveAspectRatio="none meet">
+</symbol>
+    <symbol id="fillgauge3" viewBox="0 0 1000.0 300.0" preserveAspectRatio="none meet">
+</symbol>
+</defs>
+<use x="0" y="0" width="1000" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#fillgauge1" xlink:type="simple" xlink:actuate="onLoad" symboltype="17" height="300" xlink:show="embed"/>
+<use x="0" y="300" width="1000" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#fillgauge2" xlink:type="simple" xlink:actuate="onLoad" symboltype="17" height="300" xlink:show="embed"/>
+<use x="0" y="600" width="1000" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#fillgauge3" xlink:type="simple" xlink:actuate="onLoad" symboltype="17" height="300" xlink:show="embed"/>
+</svg>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        namespace = '/ele';
+        var a=[];
+        var v=[];
+        var s=[];
+        //显示数据的长度
+        var win=60
+        var t=new Date();
+        var timenow=t.getTime();
+
+        a.push([timenow,0]);
+        v.push([timenow,0]);
+        s.push([timenow,0]);
+
+        var dataset_a = [];
+        dataset_a.push( {
+                    country: "加速度",
+                    gdp: a
+                    }
+                     );
+        var dataset_v = [];
+        dataset_v.push( {
+                    country: "速度",
+                    gdp: v
+                    }
+                     );
+
+        var dataset_s = [];
+        dataset_s.push( {
+                    country: "位置",
+                    gdp: s
+                    }
+                     );
+        yup=0.8;
+        ydown=-0.8;
+        var gauge1=new loadLineChart("fillgauge1",dataset_a,yup,ydown);
+        yup=2.0;
+        ydown=-2.0;
+        var gauge2=new loadLineChart("fillgauge2",dataset_v,yup,ydown);
+        yup=30;
+        ydown=0;
+        var gauge3=new loadLineChart("fillgauge3",dataset_s,yup,ydown);
+
+        var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace, {transports: ['websocket']});
+        socket.on('server_response', function(res) {
+            console.log(res.a);
+            $('#t').text(res.a);
+            console.log(res.v);
+            $('#t1').text(res.v);
+            console.log(res.s);
+            $('#t2').text(res.s);
+            console.log(res.ah);
+            $('#t3').text(res.ah);
+
+            t=new Date();
+            timenow=t.getTime();
+            if(a.length<win)
+            {
+                a.push([timenow,res.a]);
+
+            }
+            else
+            {
+                //shift() 删除并返回数组的第一个元素
+                 a.shift();
+                // pop() 删除并返回数组的最后一个个元素
+                //a.pop();
+                a.push([timenow,res.a]);
+            }
+
+            if(v.length<win)
+            {
+                v.push([timenow,res.v]);
+
+            }
+            else
+            {
+                //shift() 删除并返回数组的第一个元素
+                 v.shift();
+                v.push([timenow,res.v]);
+            }
+
+            if(s.length<win)
+            {
+                s.push([timenow,res.s]);
+
+            }
+            else
+            {
+                //shift() 删除并返回数组的第一个元素
+                 s.shift();
+                s.push([timenow,res.s]);
+            }
+
+            dataset_a[0].gdp=a;
+            dataset_v[0].gdp=v;
+            dataset_s[0].gdp=s;
+            yup=0.8;
+            ydown=-0.8;
+            gauge1.update(dataset_a,yup,ydown);
+            yup=2.0;
+            ydown=-2.0;
+            gauge2.update(dataset_v,yup,ydown);
+            yup=30;
+            ydown=0;
+            gauge3.update(dataset_s,yup,ydown);
+
+            });
+        });
+</script>
+
+
+</body>
+</html>
